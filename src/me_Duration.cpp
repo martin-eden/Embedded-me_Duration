@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2025-10-30
+  Last mod.: 2025-11-21
 */
 
 /*
@@ -17,6 +17,32 @@
 using namespace me_Duration;
 
 const TUint_2 MaxFieldValue = 999;
+
+/*
+  Return copy of volatile record
+
+  I hate C.
+*/
+TDuration me_Duration::GetVolatile(
+  volatile TDuration &A
+)
+{
+  return { A.KiloS, A.S, A.MilliS, A.MicroS };
+}
+
+/*
+  Set volatile record
+*/
+void me_Duration::SetVolatile(
+  volatile TDuration &A,
+  TDuration B
+)
+{
+  A.KiloS = B.KiloS;
+  A.S = B.S;
+  A.MilliS = B.MilliS;
+  A.MicroS = B.MicroS;
+}
 
 /*
   True when timestamps are equal

@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2025-10-30
+  Last mod.: 2025-11-21
 */
 
 #pragma once
@@ -28,6 +28,8 @@ namespace me_Duration
 
   // Zero constant
   const TDuration Zero = { 0, 0, 0, 0 };
+  TDuration GetVolatile(volatile TDuration&);
+  void SetVolatile(volatile TDuration&, TDuration);
 
   /*
     Comparison
