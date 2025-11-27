@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2025-11-25
+  Last mod.: 2025-11-27
 */
 
 #pragma once
@@ -18,8 +18,12 @@ namespace me_Duration
     Capacity: 1 mega-second (~11 days)
     Granularity: 1 micro-second
 
-    Original structure used 10-bit fields and occupied 5 bytes.
+    Contract
 
+      * Unit stores integer values between 0 and 999
+      * Next unit is 1000 times less
+
+    Original structure used 10-bit fields and occupied 5 bytes.
     It worked fine and you can revert back to it.
 
     But there are more CPU operations to get/set field in this case.
