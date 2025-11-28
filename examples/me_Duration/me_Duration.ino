@@ -52,8 +52,6 @@ void Add(
   me_Duration::TDuration B
 )
 {
-  TBool IsOk;
-
   PrintDuration(A);
 
   Console.Write("+");
@@ -62,19 +60,16 @@ void Add(
 
   Console.Write("=");
 
-  IsOk = me_Duration::Add(&A, B);
+  me_Duration::WrappedAdd(&A, B);
 
   PrintDuration(A);
-
-  if (!IsOk)
-    Console.Write("[!]");
 
   Console.EndLine();
 }
 
 void TestAdd()
 {
-  Console.Print("( Addition");
+  Console.Print("( Wrapped addition");
   Console.Indent();
 
   // A + B = B + A  -- commutativity
@@ -102,8 +97,6 @@ void Sub(
   me_Duration::TDuration B
 )
 {
-  TBool IsOk;
-
   PrintDuration(A);
 
   Console.Write("-");
@@ -112,19 +105,16 @@ void Sub(
 
   Console.Write("=");
 
-  IsOk = me_Duration::Subtract(&A, B);
+  me_Duration::WrappedSub(&A, B);
 
   PrintDuration(A);
-
-  if (!IsOk)
-    Console.Write("[!]");
 
   Console.EndLine();
 }
 
 void TestSub()
 {
-  Console.Print("( Subtraction");
+  Console.Print("( Wrapped subtraction");
   Console.Indent();
 
   // Borrow
