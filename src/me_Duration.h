@@ -39,7 +39,7 @@ namespace me_Duration
   };
 
   // Minimum value
-  const TDuration Zero = { 0, 0, 0, 0 };
+  const TDuration MinValue = { 0, 0, 0, 0 };
 
   // Maximum value
   const TDuration MaxValue = { 999, 999, 999, 999 };

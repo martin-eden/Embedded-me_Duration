@@ -292,7 +292,7 @@ void me_Duration::CappedSub(
   if (!DurationIsValid(B)) return;
 
   if (!Sub(A, B))
-    *A = Zero;
+    *A = MinValue;
 }
 
 /*
