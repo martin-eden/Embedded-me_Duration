@@ -14,6 +14,9 @@
 
 #include <me_BaseTypes.h>
 
+#include <avr/common.h> // SREG
+#include <avr/interrupt.h> // cli()
+
 using namespace me_Duration;
 
 const TUint_2 MaxFieldValue = 999;
@@ -27,7 +30,20 @@ TDuration me_Duration::GetVolatile(
   volatile TDuration &A
 )
 {
-  return { A.KiloS, A.S, A.MilliS, A.MicroS };
+  me_Duration::TDuration Result;
+  TUint_1 PrevSreg;
+
+  PrevSreg = SREG;
+  cli();
+
+  Result.KiloS = A.KiloS;
+  Result.S = A.S;
+  Result.MilliS = A.MilliS;
+  Result.MicroS = A.MicroS;
+
+  SREG = PrevSreg;
+
+  return Result;
 }
 
 /*
@@ -38,10 +54,17 @@ void me_Duration::SetVolatile(
   TDuration B
 )
 {
+  TUint_1 PrevSreg;
+
+  PrevSreg = SREG;
+  cli();
+
   A.KiloS = B.KiloS;
   A.S = B.S;
   A.MilliS = B.MilliS;
   A.MicroS = B.MicroS;
+
+  SREG = PrevSreg;
 }
 
 /*
