@@ -44,10 +44,6 @@ namespace me_Duration
   // Maximum value
   const TDuration MaxValue = { 999, 999, 999, 999 };
 
-  // Get/set "volatile" record
-  TDuration GetVolatile(volatile TDuration&);
-  void SetVolatile(volatile TDuration&, TDuration);
-
   /*
     Comparison
 
@@ -76,6 +72,12 @@ namespace me_Duration
   /*
     Import/export
   */
+
+  // Get/set "volatile" record
+  TDuration GetVolatile(volatile TDuration&);
+  void SetVolatile(volatile TDuration&, TDuration);
+
+  // To/from microseconds
   TUint_4 DurationToMicros(TDuration);
   TDuration MicrosToDuration(TUint_4);
 }
