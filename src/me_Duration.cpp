@@ -254,7 +254,7 @@ void me_Duration::WrappedAdd(
 /*
   Capped add
 */
-void TDuration::CappedAdd(
+void me_Duration::CappedAdd(
   TDuration * A,
   TDuration B
 )
