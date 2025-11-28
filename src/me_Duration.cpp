@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2025-11-21
+  Last mod.: 2025-11-28
 */
 
 /*
@@ -141,22 +141,14 @@ TBool DurationIsValid(
     (Dur.MicroS <= MaxFieldValue);
 }
 
-/*
-  Add timestamp
-
-  For field values over 999 returns "false".
-  On overflow wraps around and returns "false".
-*/
-TBool me_Duration::Add(
+// [Internal] Add with wrapping. Returns false on overflow
+static TBool Add(
   TDuration * A,
   TDuration B
 )
 {
   TUint_2 KiloS, S, MilliS, MicroS;
   TUint_1 Carry, NextCarry;
-
-  if (!DurationIsValid(*A)) return false;
-  if (!DurationIsValid(B)) return false;
 
   KiloS = A->KiloS;
   S = A->S;
@@ -197,22 +189,14 @@ TBool me_Duration::Add(
   return (Carry == 0);
 }
 
-/*
-  Subtract duration
-
-  For field values over 999 returns "false".
-  On underflow wraps around and returns "false".
-*/
-TBool me_Duration::Subtract(
+// [Internal] Subtract with wrapping. Returns false on underflow
+static TBool Sub(
   TDuration * A,
   TDuration B
 )
 {
   TUint_2 KiloS, S, MilliS, MicroS;
   TUint_1 Borrow, NextBorrow;
-
-  if (!DurationIsValid(*A)) return false;
-  if (!DurationIsValid(B)) return false;
 
   KiloS = A->KiloS;
   S = A->S;
@@ -254,6 +238,64 @@ TBool me_Duration::Subtract(
 }
 
 /*
+  Add timestamp with wrapping
+*/
+void me_Duration::WrappedAdd(
+  TDuration * A,
+  TDuration B
+)
+{
+  if (!DurationIsValid(*A)) return;
+  if (!DurationIsValid(B)) return;
+
+  Add(A, B);
+}
+
+/*
+  Capped add
+*/
+void TDuration::CappedAdd(
+  TDuration * A,
+  TDuration B
+)
+{
+  if (!DurationIsValid(*A)) return;
+  if (!DurationIsValid(B)) return;
+
+  if (!Add(A, B))
+    *A = MaxValue;
+}
+
+/*
+  Subtract duration with wrapping
+*/
+void me_Duration::WrappedSub(
+  TDuration * A,
+  TDuration B
+)
+{
+  if (!DurationIsValid(*A)) return;
+  if (!DurationIsValid(B)) return;
+
+  Sub(A, B);
+}
+
+/*
+  Capped subtract
+*/
+void me_Duration::CappedSub(
+  TDuration * A,
+  TDuration B
+)
+{
+  if (!DurationIsValid(*A)) return;
+  if (!DurationIsValid(B)) return;
+
+  if (!Sub(A, B))
+    *A = Zero;
+}
+
+/*
   Convert duration record to number of microseconds
 */
 TUint_4 me_Duration::DurationToMicros(
@@ -289,4 +331,5 @@ me_Duration::TDuration me_Duration::MicrosToDuration(
   2025-08-01
   2025-10-28
   2025-10-30
+  2025-11-28
 */

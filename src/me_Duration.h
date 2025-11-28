@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2025-11-27
+  Last mod.: 2025-11-28
 */
 
 #pragma once
@@ -38,8 +38,13 @@ namespace me_Duration
     TUint_2 MicroS;
   };
 
-  // Zero constant
+  // Minimum value
   const TDuration Zero = { 0, 0, 0, 0 };
+
+  // Maximum value
+  const TDuration MaxValue = { 999, 999, 999, 999 };
+
+  // Get/set "volatile" record
   TDuration GetVolatile(volatile TDuration&);
   void SetVolatile(volatile TDuration&, TDuration);
 
@@ -54,23 +59,25 @@ namespace me_Duration
       IsGreaterOrEqual
     ) - boolean functions for readable code
   */
-  TBool AreEqual(TDuration A, TDuration B);
-  TBool IsLess(TDuration A, TDuration B);
-  TBool IsGreater(TDuration A, TDuration B);
-  TBool IsLessOrEqual(TDuration A, TDuration B);
-  TBool IsGreaterOrEqual(TDuration A, TDuration B);
+  TBool AreEqual(TDuration, TDuration);
+  TBool IsLess(TDuration, TDuration);
+  TBool IsGreater(TDuration, TDuration);
+  TBool IsLessOrEqual(TDuration, TDuration);
+  TBool IsGreaterOrEqual(TDuration, TDuration);
 
   /*
     Add/subtract functions
   */
-  TBool Add(TDuration * A, TDuration B);
-  TBool Subtract(TDuration * A, TDuration B);
+  void WrappedAdd(TDuration *, TDuration);
+  void WrappedSub(TDuration *, TDuration);
+  void CappedAdd(TDuration *, TDuration);
+  void CappedSub(TDuration *, TDuration);
 
   /*
     Import/export
   */
-  TUint_4 DurationToMicros(TDuration Duration);
-  TDuration MicrosToDuration(TUint_4 NumMicros);
+  TUint_4 DurationToMicros(TDuration);
+  TDuration MicrosToDuration(TUint_4);
 }
 
 /*
@@ -80,4 +87,5 @@ namespace me_Duration
   2025-09-20 Renamed from Timestamp to Duration
   2025-10-30 Duration to micros conversion
   2025-11-25 No bitfields in record
+  2025-11-28 "Capped" and "Wrapped" flavors of Add/Sub
 */
