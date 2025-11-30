@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2025-11-28
+  Last mod.: 2025-11-30
 */
 
 /*
@@ -318,34 +318,63 @@ void me_Duration::CappedSub(
     *A = MinValue;
 }
 
+const TUint_4 MaxMicrosToConvert = 4000000000;
+const TDuration MaxDurationToConvert = { 4, 0, 0, 0 };
+
 /*
   Convert duration record to number of microseconds
 */
-TUint_4 me_Duration::DurationToMicros(
+TBool me_Duration::DurationToMicros(
+  TUint_4 * NumMicros,
   me_Duration::TDuration Duration
 )
 {
-  return
-    (TUint_4) 1000000 * Duration.S +
-    (TUint_4) 1000 * Duration.MilliS +
-    (TUint_4) Duration.MicroS;
+  TBool IsCapped;
+
+  IsCapped = false;
+
+  if (IsGreater(Duration, MaxDurationToConvert))
+  {
+    Duration = MaxDurationToConvert;
+
+    IsCapped = true;
+  }
+
+  *NumMicros =
+    (TUint_4)
+    1000000000 * Duration.KiloS +
+    1000000 * Duration.S +
+    1000 * Duration.MilliS +
+    Duration.MicroS;
+
+  return !IsCapped;
 }
 
 /*
   Convert number of microseconds to duration record
 */
-me_Duration::TDuration me_Duration::MicrosToDuration(
+TBool me_Duration::MicrosToDuration(
+  me_Duration::TDuration * Duration,
   TUint_4 NumMicros
 )
 {
-  me_Duration::TDuration Result;
+  TBool IsCapped;
 
-  Result.KiloS = 0;
-  Result.S = NumMicros / 1000000;
-  Result.MilliS = NumMicros / 1000 % 1000;
-  Result.MicroS = NumMicros % 1000;
+  IsCapped = false;
 
-  return Result;
+  if (NumMicros > MaxMicrosToConvert)
+  {
+    NumMicros = MaxMicrosToConvert;
+
+    IsCapped = true;
+  }
+
+  Duration->KiloS = (NumMicros / 1000000000) % 1000;
+  Duration->S = (NumMicros / 1000000) % 1000;
+  Duration->MilliS = (NumMicros / 1000) % 1000;
+  Duration->MicroS = (NumMicros / 1) % 1000;
+
+  return !IsCapped;
 }
 
 /*

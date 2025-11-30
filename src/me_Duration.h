@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2025-11-28
+  Last mod.: 2025-11-30
 */
 
 #pragma once
@@ -78,8 +78,8 @@ namespace me_Duration
   void SetVolatile(volatile TDuration&, TDuration);
 
   // To/from microseconds
-  TUint_4 DurationToMicros(TDuration);
-  TDuration MicrosToDuration(TUint_4);
+  TBool DurationToMicros(TUint_4 *, TDuration);
+  TBool MicrosToDuration(TDuration *, TUint_4);
 }
 
 /*
