@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2025-09-20
+  Last mod.: 2025-11-30
 */
 
 #include <me_Duration.h>
@@ -132,11 +132,83 @@ void TestSub()
   Console.Print(")");
 }
 
+void TestDurationToMicros(
+  me_Duration::TDuration Duration
+)
+{
+  TUint_4 Micros;
+
+  Console.Write("Duration");
+  me_DebugPrints::PrintDuration(Duration);
+
+  if (!me_Duration::DurationToMicros(&Micros, Duration))
+    Console.Print("Conversion result capped");
+
+  me_DebugPrints::Print("Micros", Micros);
+
+  Console.EndLine();
+}
+
+void TestMicrosToDuration(
+  TUint_4 Micros
+)
+{
+  me_Duration::TDuration Duration;
+
+  me_DebugPrints::Print("Micros", Micros);
+
+  if (!me_Duration::MicrosToDuration(&Duration, Micros))
+    Console.Print("Conversion result capped");
+
+  Console.Write("Duration");
+  me_DebugPrints::PrintDuration(Duration);
+
+  Console.EndLine();
+}
+
+void TestDurationsToMicros()
+{
+  Console.Print("( Durations to micros");
+  Console.Indent();
+
+  TestDurationToMicros({ 0, 0, 0, 0 });
+  TestDurationToMicros({ 0, 0, 0, 1 });
+  TestDurationToMicros({ 0, 0, 0, 999 });
+  TestDurationToMicros({ 0, 0, 1, 0 });
+  TestDurationToMicros({ 0, 1, 0, 0 });
+  TestDurationToMicros({ 1, 0, 0, 0 });
+  TestDurationToMicros({ 4, 0, 0, 0 });
+  TestDurationToMicros({ 4, 0, 0, 1 });
+
+  Console.Unindent();
+  Console.Print(")");
+}
+
+void TestMicrosToDurations()
+{
+  Console.Print("( Micros to durations");
+  Console.Indent();
+
+  TestMicrosToDuration(0);
+  TestMicrosToDuration(1);
+  TestMicrosToDuration(999);
+  TestMicrosToDuration(1000);
+  TestMicrosToDuration(1000000);
+  TestMicrosToDuration(1000000000);
+  TestMicrosToDuration(4000000000);
+  TestMicrosToDuration(4000000001);
+
+  Console.Unindent();
+  Console.Print(")");
+}
+
 void RunTests()
 {
   TestCompare();
   TestAdd();
   TestSub();
+  TestDurationsToMicros();
+  TestMicrosToDurations();
 }
 
 void setup()
@@ -159,4 +231,5 @@ void loop()
   2025-03-02
   2025-08-01
   2025-09-19
+  2025-11-30
 */
