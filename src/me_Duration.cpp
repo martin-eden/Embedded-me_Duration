@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2025-11-30
+  Last mod.: 2025-12-01
 */
 
 /*
@@ -341,10 +341,9 @@ TBool me_Duration::DurationToMicros(
   }
 
   *NumMicros =
-    (TUint_4)
-    1000000000 * Duration.KiloS +
-    1000000 * Duration.S +
-    1000 * Duration.MilliS +
+    1000000000L* Duration.KiloS +
+    1000000L * Duration.S +
+    1000L * Duration.MilliS +
     Duration.MicroS;
 
   return !IsCapped;
