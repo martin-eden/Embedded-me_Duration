@@ -2,7 +2,15 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2025-11-30
+  Last mod.: 2025-12-08
+*/
+
+/*
+  Point of this module is "Duration" time record
+
+  It is not designed for system clock calculations.
+
+  It is designed around "second" time unit and 10^3 scaling.
 */
 
 #pragma once
