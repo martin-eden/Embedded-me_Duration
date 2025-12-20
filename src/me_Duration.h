@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2025-12-08
+  Last mod.: 2025-12-26
 */
 
 /*
@@ -35,8 +35,7 @@ namespace me_Duration
     It worked fine and you can revert back to it.
 
     But there are more CPU operations to get/set field in this case.
-    It means minimum time to access field is higher when you're using
-    bitfields.
+    It means field access time will be longer.
   */
   struct TDuration
   {
