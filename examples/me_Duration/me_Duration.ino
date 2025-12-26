@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2025-11-30
+  Last mod.: 2025-12-26
 */
 
 #include <me_Duration.h>
@@ -10,129 +10,9 @@
 #include <me_BaseTypes.h>
 #include <me_Console.h>
 #include <me_DebugPrints.h>
+#include <me_StreamsCollection.h>
 
-using me_DebugPrints::PrintDuration;
-
-void Compare(
-  me_Duration::TDuration A,
-  me_Duration::TDuration B
-)
-{
-  PrintDuration(A);
-
-  if (me_Duration::IsLess(A, B))
-    Console.Write("<");
-
-  if (me_Duration::IsGreater(A, B))
-    Console.Write(">");
-
-  if (me_Duration::AreEqual(A, B))
-    Console.Write("=");
-
-  PrintDuration(B);
-
-  Console.EndLine();
-}
-
-void TestCompare()
-{
-  Console.Print("( Comparison");
-  Console.Indent();
-
-  Compare({ 000, 000, 000, 000 }, { 000, 000, 000, 000 });
-  Compare({ 000, 999, 000, 000 }, { 000, 000, 000, 000 });
-  Compare({ 000, 000, 000, 000 }, { 000, 000, 001, 000 });
-
-  Console.Unindent();
-  Console.Print(")");
-}
-
-void Add(
-  me_Duration::TDuration A,
-  me_Duration::TDuration B
-)
-{
-  PrintDuration(A);
-
-  Console.Write("+");
-
-  PrintDuration(B);
-
-  Console.Write("=");
-
-  me_Duration::WrappedAdd(&A, B);
-
-  PrintDuration(A);
-
-  Console.EndLine();
-}
-
-void TestAdd()
-{
-  Console.Print("( Wrapped addition");
-  Console.Indent();
-
-  // A + B = B + A  -- commutativity
-  Add({ 0, 0, 0, 1 }, { 0, 0, 0, 2 });
-  Add({ 0, 0, 0, 2 }, { 0, 0, 0, 1 });
-
-  // Carry
-  Add({ 0, 0, 1, 0 }, { 0, 0, 999, 0 });
-
-  // Overflow
-  Add({ 500, 0, 0, 2 }, { 499, 999, 999, 999 });
-
-  // Max field values
-  Add({ 0, 0, 999, 0 }, { 0, 0, 999, 0 });
-
-  // Invalid field value
-  Add({ 0, 0, 0, 0 }, { 0, 0, 0, 1023 });
-
-  Console.Unindent();
-  Console.Print(")");
-}
-
-void Sub(
-  me_Duration::TDuration A,
-  me_Duration::TDuration B
-)
-{
-  PrintDuration(A);
-
-  Console.Write("-");
-
-  PrintDuration(B);
-
-  Console.Write("=");
-
-  me_Duration::WrappedSub(&A, B);
-
-  PrintDuration(A);
-
-  Console.EndLine();
-}
-
-void TestSub()
-{
-  Console.Print("( Wrapped subtraction");
-  Console.Indent();
-
-  // Borrow
-  Sub({ 0, 1, 0, 0 }, { 0, 0, 1, 0 });
-  // Borrow
-  Sub({ 0, 1, 0, 8 }, { 0, 0, 0, 9 });
-  // Underflow
-  Sub({ 0, 0, 1, 0 }, { 0, 0, 2, 0 });
-  // Underflow
-  Sub({ 499, 999, 999, 999 }, { 500, 0, 0, 2 });
-  // Correct
-  Sub({ 500, 0, 0, 2 }, { 499, 999, 999, 999 });
-
-  Console.Unindent();
-  Console.Print(")");
-}
-
-void TestDurationToMicros(
+static void TestDurationToMicros(
   me_Duration::TDuration Duration
 )
 {
@@ -141,15 +21,20 @@ void TestDurationToMicros(
   Console.Write("Duration");
   me_DebugPrints::PrintDuration(Duration);
 
-  if (!me_Duration::DurationToMicros(&Micros, Duration))
-    Console.Print("Conversion result capped");
+  if (!me_Duration::MicrosFromDuration(&Micros, Duration))
+  {
+    Console.Print("Conversion to micros failed");
+    goto Done;
+  }
 
   me_DebugPrints::Print("Micros", Micros);
+
+Done:
 
   Console.EndLine();
 }
 
-void TestMicrosToDuration(
+static void TestMicrosToDuration(
   TUint_4 Micros
 )
 {
@@ -157,16 +42,21 @@ void TestMicrosToDuration(
 
   me_DebugPrints::Print("Micros", Micros);
 
-  if (!me_Duration::MicrosToDuration(&Duration, Micros))
-    Console.Print("Conversion result capped");
+  if (!me_Duration::DurationFromMicros(&Duration, Micros))
+  {
+    Console.Print("Conversion from micros failed");
+    goto Done;
+  }
 
   Console.Write("Duration");
   me_DebugPrints::PrintDuration(Duration);
 
+Done:
+
   Console.EndLine();
 }
 
-void TestDurationsToMicros()
+static void TestDurationsToMicros()
 {
   Console.Print("( Durations to micros");
   Console.Indent();
@@ -175,16 +65,14 @@ void TestDurationsToMicros()
   TestDurationToMicros({ 0, 0, 0, 1 });
   TestDurationToMicros({ 0, 0, 0, 999 });
   TestDurationToMicros({ 0, 0, 1, 0 });
-  TestDurationToMicros({ 0, 1, 0, 0 });
-  TestDurationToMicros({ 1, 0, 0, 0 });
+  TestDurationToMicros({ 3, 999, 999, 999 });
   TestDurationToMicros({ 4, 0, 0, 0 });
-  TestDurationToMicros({ 4, 0, 0, 1 });
 
   Console.Unindent();
   Console.Print(")");
 }
 
-void TestMicrosToDurations()
+static void TestMicrosToDurations()
 {
   Console.Print("( Micros to durations");
   Console.Indent();
@@ -193,22 +81,72 @@ void TestMicrosToDurations()
   TestMicrosToDuration(1);
   TestMicrosToDuration(999);
   TestMicrosToDuration(1000);
-  TestMicrosToDuration(1000000);
-  TestMicrosToDuration(1000000000);
+  TestMicrosToDuration(3999999999);
   TestMicrosToDuration(4000000000);
-  TestMicrosToDuration(4000000001);
 
   Console.Unindent();
   Console.Print(")");
 }
 
-void RunTests()
+/*
+  Tour: Int -> Dur -> OutStream -> InStream -> Dur -> Int
+*/
+static void TestFullCycle(
+  TUint_4 Micros
+)
 {
-  TestCompare();
-  TestAdd();
-  TestSub();
+  TUint_4 OrigMicros;
+  me_Duration::TDuration Duration;
+  TUint_1 Buffer[40];
+  TAddressSegment BufSeg = AsAddrSeg_M(Buffer);
+  me_StreamsCollection::TWorkmemInputStream InStream;
+  me_StreamsCollection::TWorkmemOutputStream OutStream;
+
+  OrigMicros = Micros;
+
+  Console.Print("(");
+  Console.Indent();
+
+  me_DebugPrints::Print("Micros", Micros);
+  if (!me_Duration::DurationFromMicros(&Duration, Micros))
+    Console.Print("Failed to get duration");
+  Console.EndLine();
+
+  OutStream.Init(BufSeg);
+  me_Duration::Print(Duration, &OutStream);
+  Console.Write("Duration (");
+  Console.Write(OutStream.GetProcessedSegment());
+  Console.Write(")");
+  Console.EndLine();
+
+  InStream.Init(OutStream.GetProcessedSegment());
+  if (!me_Duration::Read(&Duration, &InStream))
+    Console.Print("Failed to read duration");
+
+  if (!me_Duration::MicrosFromDuration(&Micros, Duration))
+    Console.Print("Failed to get micros");
+  me_DebugPrints::Print("Micros", Micros);
+
+  if (Micros != OrigMicros)
+    Console.Print("Did not arrive to original value");
+
+  Console.Unindent();
+  Console.Print(")");
+}
+
+static void TestFullCycles()
+{
+  TestFullCycle(10);
+  TestFullCycle(10011);
+  TestFullCycle(10011012);
+  TestFullCycle(4011012013);
+}
+
+static void RunTests()
+{
   TestDurationsToMicros();
   TestMicrosToDurations();
+  TestFullCycles();
 }
 
 void setup()
@@ -232,4 +170,5 @@ void loop()
   2025-08-01
   2025-09-19
   2025-11-30
+  2025-12-26
 */
