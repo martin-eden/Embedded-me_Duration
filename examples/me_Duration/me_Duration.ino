@@ -113,7 +113,7 @@ static void TestFullCycle(
   Console.EndLine();
 
   OutStream.Init(BufSeg);
-  me_Duration::Print(Duration, &OutStream);
+  me_Duration::Write(Duration, &OutStream);
   Console.Write("Duration (");
   Console.Write(OutStream.GetProcessedSegment());
   Console.Write(")");
@@ -136,10 +136,16 @@ static void TestFullCycle(
 
 static void TestFullCycles()
 {
+  Console.Print("( Micros - Duration - OutStream - InStream - Duration - Micros");
+  Console.Indent();
+
   TestFullCycle(10);
   TestFullCycle(10011);
   TestFullCycle(10011012);
   TestFullCycle(4011012013);
+
+  Console.Unindent();
+  Console.Print(")");
 }
 
 static void RunTests()

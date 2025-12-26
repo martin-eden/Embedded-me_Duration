@@ -61,7 +61,7 @@ namespace me_Duration
   TBool DurationFromMicros(TDuration *, TUint_4);
   // )
   // ( Console codec
-  TBool Print(TDuration, IOutputStream *);
+  TBool Write(TDuration, IOutputStream *);
   TBool Read(TDuration *, IInputStream *);
   // )
 }
