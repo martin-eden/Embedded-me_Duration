@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2025-12-26
+  Last mod.: 2025-12-27
 */
 
 #include <me_Duration.h>
@@ -18,8 +18,7 @@ static void TestDurationToMicros(
 {
   TUint_4 Micros;
 
-  Console.Write("Duration");
-  me_DebugPrints::PrintDuration(Duration);
+  me_DebugPrints::PrintDuration("Duration", Duration);
 
   if (!me_Duration::MicrosFromDuration(&Micros, Duration))
   {
@@ -48,8 +47,7 @@ static void TestMicrosToDuration(
     goto Done;
   }
 
-  Console.Write("Duration");
-  me_DebugPrints::PrintDuration(Duration);
+  me_DebugPrints::PrintDuration("Duration", Duration);
 
 Done:
 
