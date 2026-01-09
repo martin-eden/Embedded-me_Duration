@@ -2,7 +2,7 @@
 
 /*
   Author: Martin Eden
-  Last mod.: 2025-12-27
+  Last mod.: 2026-01-10
 */
 
 #include <me_Duration.h>
@@ -96,7 +96,7 @@ static void TestFullCycle(
   TUint_4 OrigMicros;
   me_Duration::TDuration Duration;
   TUint_1 Buffer[40];
-  TAddressSegment BufSeg = AsAddrSeg_M(Buffer);
+  TAddressSegment BufSeg = M_AsAddrSeg(Buffer);
   me_StreamsCollection::TWorkmemInputStream InStream;
   me_StreamsCollection::TWorkmemOutputStream OutStream;
 
